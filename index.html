@@ -1,0 +1,17 @@
+<form >
+    <label for="myfile">Select files:</label>
+    <input type="file" id="myFile" name="myfile" multiple><br><br>
+    <input type="submit" id="submitBtn">
+  </form>
+
+<script>
+
+let submitBtn = document.getElementById('submitBtn');
+
+submitBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log(`ready to read files`);
+    console.log(document.getElementById('myFile').value);
+});
+
+</script>
