@@ -1,17 +1,11 @@
-<form >
+<!-- <form>
     <label for="myfile">Select files:</label>
     <input type="file" id="myFile" name="myfile" multiple><br><br>
     <input type="submit" id="submitBtn">
-  </form>
+</form> -->
 
-<script>
+<textarea rows="5" cols="60" name="text" id="htmlContent" placeholder="Paste your HTML text here, then select Convert."></textarea>
 
-let submitBtn = document.getElementById('submitBtn');
+<button type="button" id="convertBtn">Convert</button>
 
-submitBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    console.log(`ready to read files`);
-    console.log(document.getElementById('myFile').value);
-});
-
-</script>
+<script src="index.js"></script>
