@@ -35,6 +35,20 @@ function removeTags(html) {
     'li',
     'strong'
   ];
+
+  /* search html for '<'. Mark that index. From that index,
+  search for '>' OR '</' followed by '>'. 
+  */
+
+  let openingTagIndex = html.indexOf('<');
+  let closingTagIndex = html.indexOf('>', openingTagIndex);
+
+  /*
+
+  If nothing between that matches tagsToKeep, delete the string.
+
+  */
+  
 }
 
 convertBtn.addEventListener('click', () => {
