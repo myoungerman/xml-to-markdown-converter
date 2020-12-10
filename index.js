@@ -21,7 +21,8 @@
 let htmlToConvert = '';
 let convertBtn = document.getElementById('convertBtn');
 
-function removeTags(html) {
+function checkTags(html) {
+  let convertedText = html; // this value changes once the conversion has finished
   // list of tags we should keep
   const tagsToKeep = [
     'a',
@@ -36,22 +37,45 @@ function removeTags(html) {
     'strong'
   ];
 
+  removeTags(html);
+}
+
+function removeTags(html) {
   /* search html for '<'. Mark that index. From that index,
-  search for '>' OR '</' followed by '>'. 
+  search for '>'. 
   */
 
-  let openingTagIndex = html.indexOf('<');
-  let closingTagIndex = html.indexOf('>', openingTagIndex);
+  let stringStart = html.indexOf('<');
+  let stringEnd = html.indexOf('>', stringStart);
+  let wholeTag = '';
+  let deleteTag = true;
 
-  /*
+  for (let i = stringStart; i <= stringEnd; i++) {
+    // get the entire string between the two indices
+    wholeTag += html[i];
+  }
 
-  If nothing between that matches tagsToKeep, delete the string.
+  // once we have the whole string, see if we should keep or erase it
+  tagsToKeep.forEach((el) => {
+    if (wholeTag.includes(`<${el}`)) {
+      deleteTag = false;
+    }
+  });
 
-  */
-  
+  if (deleteTag === true) {
+    convertedText = html.replace(wholeTag, '');
+  }
+
+  // loop again if there's more < in the html after the current index
+  if (html.indexOf('<', stringEnd)) {
+    removeTags();
+  } else {
+  // show the converted content in the Markdown box
+  document.getElementById('markdownContent').value = convertedText;
+  }
 }
 
 convertBtn.addEventListener('click', () => {
   htmlToConvert = document.getElementById('htmlContent').value;
-  removeTags(htmlToConvert);
+  checkTags(htmlToConvert);
 });
