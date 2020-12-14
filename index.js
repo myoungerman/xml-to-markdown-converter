@@ -59,30 +59,37 @@ function checkTags(html) {
       // get the entire string between the two indices
       wholeTag += html[i];
     }
-  
+    
     // once we have the whole string, see if we should keep or erase it
     tagsToKeep.forEach((el) => {
-      if (wholeTag.includes(`<${el}`)) {
+      if (wholeTag.includes(`<${el}`) || wholeTag.includes(`</${el}`)) {
         deleteTag = false;
       }
     });
   
     if (deleteTag === true) {
-      convertedText = html.replace(wholeTag, '');
-    }
-  
-    // loop again if there's more < in the html after the current index
-    if (html.indexOf('<', stringEnd)) {
-      console.log('looking for more tags');
+      convertedText = convertedText.replace(wholeTag, '');
+    }    
+
+    // loop again if there are more tags in the html after the current index
+    if (html.indexOf('<', stringEnd) !== -1) {
       lastIndexChecked = stringEnd;
       firstSearch = false;
       removeTags(html);
     } else {
-    // show the converted content in the Markdown box
+    // show the converted content
     document.getElementById('markdownContent').value = convertedText;
     }
   }
-  
+}
+
+// handle formatting for items
+/* items include list items, images, links, notes
+
+*/
+
+function formatElement(el) {
+
 }
 
 
