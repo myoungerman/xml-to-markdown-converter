@@ -22,22 +22,22 @@ let htmlToConvert = '';
 let convertBtn = document.getElementById('convertBtn');
 
 function checkTags(html) {
-  let convertedText = html; // this value changes once the conversion has finished
+  let finalOutput = html; // this value changes once the conversion has finished
   // list of tags we should keep
   const tagsToKeep = [
     'a',
+    '/a',
     'title',
     'h1',
     'h2',
     'h3',
     'h4',
-    'ul',
-    'ol',
     'li',
     'strong'
   ];
   let firstSearch = true;
   let lastIndexChecked = 0;
+  let useListType = 'unordered';
 
   removeTags(html);
 
@@ -60,15 +60,25 @@ function checkTags(html) {
       wholeTag += html[i];
     }
     
-    // once we have the whole string, see if we should keep or erase it
+    // check if we should keep this tag
     tagsToKeep.forEach((el) => {
-      if (wholeTag.includes(`<${el}`) || wholeTag.includes(`</${el}`)) {
+      if (wholeTag.includes(`<${el}`)) {
         deleteTag = false;
+        let markdownEquivalent = findMarkdownEquivalent(wholeTag, useListType);
+        finalOutput = finalOutput.replace(wholeTag, `${markdownEquivalent} `);
       }
     });
   
+    // remove the tag if it doesn't match what we want to keep
     if (deleteTag === true) {
-      convertedText = convertedText.replace(wholeTag, '');
+      finalOutput = finalOutput.replace(wholeTag, '');
+      // determine which list type to use for incoming list items
+      if (wholeTag.includes('<ol')) {
+        useListType = 'ordered';
+      }
+      if (wholeTag.includes('<ul')) {
+        useListType = 'unordered';
+      }
     }    
 
     // loop again if there are more tags in the html after the current index
@@ -77,19 +87,47 @@ function checkTags(html) {
       firstSearch = false;
       removeTags(html);
     } else {
-    // show the converted content
-    document.getElementById('markdownContent').value = convertedText;
+    // all the content has been converted, so show the converted content
+    document.getElementById('markdownContent').value = finalOutput;
     }
   }
 }
 
-// handle formatting for items
-/* items include list items, images, links, notes
+function findMarkdownEquivalent(wholeTag, useListType) {
 
-*/
+  let markdownFormat = '';
 
-function formatElement(el) {
+  // headings
+  if (wholeTag.includes('h1')) {
+    markdownFormat = '#';
+  } else if (wholeTag.includes('h2')) {
+    markdownFormat = '##';
+  } else if (wholeTag.includes('h3')) {
+    markdownFormat = '###';
+  } else if (wholeTag.includes('h4')) {
+    markdownFormat = '####';
+  } else {
+    markdownFormat = '';
+  }
 
+  // list items
+  if (wholeTag.includes('li')) {
+    if (useListType === 'unordered') {
+      markdownFormat = '*';
+    } else {
+      markdownFormat = '1.';
+    }
+  }  
+
+  // links
+  //<a class="link" href="cas_br_cru_replacement_procedures.html">Component Replacement Procedures</a>
+  // get the text after href, then make the text between the opening and closing a tags the link
+
+  // notes, cautions, etc.
+
+  // images
+
+  return markdownFormat;
 }
 
 
